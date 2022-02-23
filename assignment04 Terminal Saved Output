@@ -1,0 +1,40 @@
+Last login: Tue Feb 22 17:52:58 on ttys000
+shelby@ShelMacBook-2019 ~ % pwd
+/Users/shelby
+shelby@ShelMacBook-2019 ~ % cd /Users/shelby/Documents/McCourt/Intro_to_Data_Science/assignment04
+shelby@ShelMacBook-2019 assignment04 % git init
+Reinitialized existing Git repository in /Users/shelby/Documents/McCourt/Intro_to_Data_Science/assignment04/.git/
+shelby@ShelMacBook-2019 assignment04 % git add README.md
+shelby@ShelMacBook-2019 assignment04 % git add index.rmd
+shelby@ShelMacBook-2019 assignment04 % git commit
+Aborting commit due to empty commit message.
+shelby@ShelMacBook-2019 assignment04 % git init
+Reinitialized existing Git repository in /Users/shelby/Documents/McCourt/Intro_to_Data_Science/assignment04/.git/
+shelby@ShelMacBook-2019 assignment04 % git add README.md
+shelby@ShelMacBook-2019 assignment04 % git add index.rmd
+shelby@ShelMacBook-2019 assignment04 % git add assignment04.Rproj
+shelby@ShelMacBook-2019 assignment04 % git commit -m "initialize the repo"
+[master (root-commit) 9965bb8] initialize the repo
+ 3 files changed, 49 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 assignment04.Rproj
+ create mode 100644 index.Rmd
+shelby@ShelMacBook-2019 assignment04 % git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.DS_Store
+	.Rproj.user/
+
+nothing added to commit but untracked files present (use "git add" to track)
+shelby@ShelMacBook-2019 assignment04 % .gitignore
+zsh: command not found: .gitignore
+shelby@ShelMacBook-2019 assignment04 % eval "$(ssh-agent -s)"
+Agent pid 20400
+shelby@ShelMacBook-2019 assignment04 % git remote add origin git@github.com:maitreyinatarajan/Assignment04.git
+git branch -M main
+git push -u origin main
+The authenticity of host 'github.com (140.82.112.3)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? 
