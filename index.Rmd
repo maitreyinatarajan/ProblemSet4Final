@@ -17,7 +17,36 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 
-urbandata <- read_csv("health.equity.data.csv")
+urbandata <- read_csv("health.equity.data.csv") %>%
+    janitor::clean_names()
 
+library(ggplot2)
+```
+##Graph 1: Unemployment and Opioid Deaths
+
+```{r}
+urbandata %>%
+  janitor::clean_names() %>%
+  ggplot() +
+  geom_col(
+    mapping = aes(x = region, y = opioid_overdose_deaths),
+    color = "orange") +
+  labs(title = "Unemployment vs. Opioid Deaths by Region",
+  x = "Region",
+  caption = "Source: Urban Institute") +
+  theme(
+  plot.title = element_text(hjust = 0.5),
+  plot.subtitle = element_text(hjust = 0.5),
+  plot.caption = element_text(hjust = 0.75)) 
+
+
+
+geom_col(
+    mapping = aes(x = region, y = total_unemployment_percent),
+    color = "blue")
+
+ filter(is.na(total_unemployment_percent) & 
+           is.na(opioid_overdose_deaths) & 
+           is.na(region)) %>%
 ```
 
