@@ -5,27 +5,24 @@ date: "2/22/2022"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Built Environment Health Equity Data
-
 [Data Source](https://datacatalog.urban.org/dataset/72-small-and-medium-size-cities-built-environment-and-health-equity-dataset)
 
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
 library(tidyverse)
 library(readxl)
 library(ggplot2)
+library(dplyr)
 
-
-urban <- read_csv("health.equity.data.csv") %>%
+urban <- read_csv("health.equity.data.2.csv") %>%
     janitor::clean_names()
 
 ```
-##Graph 1: Unemployment by Race and Ehtnicity
+### Graph 1: Unemployment by Race and Ehtnicity
 
-```{r}
+```{r graph1, warning = FALSE}
 urban %>%
   ggplot()+
 geom_line (mapping = aes(x = city_population, y = total_unemployment_percent), color="#CC6666",size=1)+
@@ -39,30 +36,37 @@ geom_line (mapping = aes(x = city_population, y = total_unemployment_percent), c
   y="Unemployment Rates",
   x="City Population",
   colour= "Race and Ethnic") +
-  scale_color_manual(name = "Race and Ethnicities", values = c("Total Unemployment Percent" = "#CC6666", "Hispanic or Latino Origin of Any Race" = "#9999CC", "Asian" = "#800080", "White" = "#FFDB58", "Black or African American" = "#00FF00"))
+  scale_color_manual(name = "Race and Ethnicities", values = c("Total Unemployment Percent" = "#CC6666", "Hispanic or Latino Origin of Any Race" = "#9999CC", "Asian" = "#800080", "White" = "#FFDB58", "Black or African American" = "#00FF00"))+
+    theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+    ) 
 
 ```
 
 
-##Graph 2: Unemployment vs. Opioid Deaths
-```{r}
+### Graph 2: Unemployment vs. Opioid Deaths
+
+```{r graph2, warning = FALSE}
 urban %>%
   ggplot(mapping = aes(y = total_unemployment_percent, x = opioid_overdose_deaths)) +
   geom_point(
-    color = "orange") +
+    color = "orange", position = "jitter", size = 1.75, alpha = 0.9) +
   geom_smooth(
-    color = "firebrick"
-  )+ 
+    color = "firebrick") + 
+    scale_x_log10() +
   labs(title = "Unemployment vs. Opioid Deaths",
        x = "Number of opioid overdose deaths per 100,000 people (2017)",
        y = "Total unemployment (Percent)", 
-       caption = "Source: Urban Institute") +
+       caption = "Data from Urban Institute, 2018") +
   theme(
-    plot.title = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5),
-    plot.caption = element_text(hjust = 0.9)) 
+    plot.title = element_text(hjust = 0.5)) 
 
 ```
+
+
+
+
 
 
 
