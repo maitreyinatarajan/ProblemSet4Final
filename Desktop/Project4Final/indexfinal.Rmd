@@ -82,3 +82,25 @@ urban %>%
     plot.title = element_text(hjust = 0.5)) 
 
 ```
+### Graph 3
+Graph3: This stacked bar graph divides City Types by the Population Trends.
+
+The growing population across all city types indicates that there is need to monitor growth and unemployment. The upward trend of unemployment coupled with growing populations in cities could be cause for concern. This stacked graph further shows us that portions of the population in Small Rural and County City Types are declining and growing, respectively, indicating a move to the City Center and Urban Cities. Growth without employment poses severe risk.
+
+```{r graph3, warning = FALSE}
+
+urban %>%
+  filter(!is.na(city_type) & !is.na(population_trend)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = city_type, fill = population_trend,
+                         legend = c("Population Trend")), alpha = 0.85) +
+  labs(y = "Count", x = "City Type",
+       title = "Population Trend by City Type",
+       caption = "Data from Urban Institute, 2018") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5))
+
+
+```
