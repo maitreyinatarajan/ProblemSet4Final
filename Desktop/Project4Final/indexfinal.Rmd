@@ -101,6 +101,30 @@ urban %>%
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5))
+```
+### Graph 4:
 
+Graph4 describes the relationship between Life Expectancy and Regions.
 
+This bar graph analyses the four different regions in the United States of America, and tracks life expectancy across these regions. This graph serves as a conduit between the first graph and the next, and these trends can help policy be more effective, as well as shed light on certain patterns in the USA.
+
+```{r graph4, warning = FALSE}
+
+urban %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_col(mapping = aes(x= region, y = life_expectacy), 
+           fill ="lightblue", width = 0.6) +
+  labs(title="Life Expectancy",
+       subtitle="by Regions in the USA",
+       caption="Data from Urban Institute, 2018",
+       x= "Region",
+       y= "Life Expectancy") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  ylim(0, 100)
+  
 ```
