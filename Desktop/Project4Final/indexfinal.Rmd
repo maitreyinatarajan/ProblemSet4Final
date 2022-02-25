@@ -20,7 +20,7 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 
-urban <- read_csv("health.equity.data.2.csv") %>%
+urban <- read_csv("urban.csv") %>%
     janitor::clean_names()
 
 ```
