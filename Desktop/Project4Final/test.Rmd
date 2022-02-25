@@ -4,27 +4,31 @@ author: "mkn43"
 date: "2/25/2022"
 output: html_document
 ---
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+urbanlong <- urban %>%
+pivot_longer(cols=c("unemployment_rate_hispanic_or_latino_origin_of_any_race", "unemployment_rate_asian_alone", "unemployment_rate_white_alone", "unemployment_rate_black_or_african_american_alone", "total_unemployment_percent"),
+               names_to = "race",
+               values_to = "unemployment_rates")
+urbanlong %>%
+  ggplot()+
+geom_line (mapping = aes(y = unemployment_rates, x = city_population, color=race),
+           size=0.5, width = 10) +
+  labs(title="Unemployment Trends",
+       subtitle="by Race and Ethnicity",
+       caption="Data from Urban Institute, 2018",
+  y= "Unemployment Rates",
+  colour= "Race and Ethnicity") +
+  theme_minimal() +
+  theme(legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=7)) +
+  scale_x_continuous(name = "City Population")
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

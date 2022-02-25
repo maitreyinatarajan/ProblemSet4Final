@@ -1,0 +1,84 @@
+---
+title: "Assignment 4: Data Visualization, Markdown, and Git"
+author: "Shelby Lauter & Maitreyi Natarajan"
+date: "2/22/2022"
+output: html_document
+---
+
+# Built Environment Health Equity Data
+[Data Source](https://datacatalog.urban.org/dataset/72-small-and-medium-size-cities-built-environment-and-health-equity-dataset)
+
+### SSH Authentication Screenshot
+![](Git.remote.screenshot.png)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+
+urban <- read_csv("health.equity.data.2.csv") %>%
+    janitor::clean_names()
+
+```
+
+
+
+### Graph 1: Unemployment by Race and Ethnicity
+
+Graph 1 demonstrates the relationship between race, ethnicity and unemployment in regions across the United States of America.
+
+This line graph shows us the trends for different races and ethnicities. It is evident that certain races suffer from greater unemployment trends than others. This is of policy relevance, as it helps policy makers identify these patterns, and work towards creating policy that targets the root of the issue.
+
+```{r graph1, warning = FALSE}
+
+urbanlong <- urban %>%
+pivot_longer(cols=c("unemployment_rate_hispanic_or_latino_origin_of_any_race", "unemployment_rate_asian_alone", "unemployment_rate_white_alone", "unemployment_rate_black_or_african_american_alone", "total_unemployment_percent"),
+               names_to = "race",
+               values_to = "unemployment_rates")
+urbanlong %>%
+  ggplot()+
+geom_line (mapping = aes(y = unemployment_rates, x = city_population, color=race), 
+           size=0.5, width = 10) +
+  labs(title="Unemployment Trends",
+       subtitle="by Race and Ethnicity",
+       caption="Data from Urban Institute, 2018",
+  y= "Unemployment Rates",
+  colour= "Race and Ethnicity") +
+  theme_minimal() +
+  theme(legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=7)) +
+  scale_x_continuous(name = "City Population")
+
+
+
+
+```
+
+
+
+
+### Graph 2: Unemployment vs. Opioid Deaths
+
+Graph 2 captures the relationship between overdose deaths due to opioid usage, and unamployment.
+
+The relationship between these two variables is positive and upward sloping. This is of high policy relevance, and this information can be used to create policy that generates employment in order to reduce drug usage. However, there is the possibility of reverse causation, that is, opioid usage leading to unemployment, an important caveat to remember.
+
+```{r graph2, warning = FALSE}
+urban %>%
+  ggplot(mapping = aes(y = total_unemployment_percent, x = opioid_overdose_deaths)) +
+  geom_point(
+    color = "orange", position = "jitter", size = 1.75, alpha = 0.9) +
+  geom_smooth(
+    color = "firebrick") + 
+    scale_x_log10() +
+  labs(title = "Unemployment vs. Opioid Deaths",
+       x = "Number of opioid overdose deaths per 100,000 people (2017)",
+       y = "Total unemployment (Percent)", 
+       caption = "Data from Urban Institute, 2018") +
+  theme(
+    plot.title = element_text(hjust = 0.5)) 
+
+```
