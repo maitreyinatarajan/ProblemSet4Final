@@ -1,0 +1,146 @@
+---
+title: "assignment04"
+author: "mkn43 (Maitreyi Natarajan), sl1865@georgetown.edu (Shelby Lauter)"
+date: "2/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+[Data Source] (https://datacatalog.urban.org/dataset/72-small-and-medium-size-cities-built-environment-and-health-equity-dataset)
+
+
+``` {r}
+library(tidyverse)
+library(readr)
+library(httr)
+library(dplyr)
+```
+
+#Graph 1 demonstrates the relationship between race, ethnicity and unemployment in regions across the United States of America. 
+##This line graph shows us the trends for different races and ethnicities. It is evident that certain races suffer from greater unemployment trends than others. This is of policy relevance, as it helps policy makers identify these patterns, and work towards creating policy that targets the root of the issue. 
+
+
+
+```{r}
+urban <- read_csv("urban.csv") %>%
+  janitor::clean_names()
+urbanlong <- urban %>%
+pivot_longer(cols=c("unemployment_rate_hispanic_or_latino_origin_of_any_race", "unemployment_rate_asian_alone", "unemployment_rate_white_alone", "unemployment_rate_black_or_african_american_alone", "total_unemployment_percent"),
+               names_to = "race",
+               values_to = "unemployment_rates")
+               
+
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+urban %>%
+  mutate(log_city_population= log(city_population))%>%
+  ggplot()+
+geom_line (mapping = aes(x = city_population, y = total_unemployment_percent), color="#CC6666",size=1)+
+  geom_line (mapping = aes(x = city_population, y= unemployment_rate_hispanic_or_latino_origin_of_any_race), color="#9999CC", size=1)+
+  geom_line (mapping = aes(x = city_population, y= unemployment_rate_asian_alone), color="#800080", size=1)+
+  geom_line (mapping = aes(x = city_population, y= unemployment_rate_white_alone), color="#FFDB58", size=1)+
+   geom_line (mapping = aes(x = city_population, y= unemployment_rate_black_or_african_american_alone), color="#00FF00", size=1)+
+  labs(title="Unemployment Trends", 
+       subtitle="by Race and Ethnicity",
+       caption="Data from Urban Institute, 2018",
+  y= "Unemployment Rates", 
+  x= "City Population",
+  colour= "Race and Ethnicity") +
+  theme_minimal()
+
+urbanlong %>%
+  ggplot()+
+geom_line (mapping = aes(y = unemployment_rates, x = city_population, color=race) ,size=1)+
+  labs(title="Unemployment Trends", 
+       subtitle="by Race and Ethnicity",
+       caption="Data from Urban Institute, 2018",
+  y= "Unemployment Rates", 
+  x= "City Population",
+  colour= "Race and Ethnicity") +
+  theme_minimal()+
+  scale_y_log10()
+
+  mutate(log_city_population= log(city_population))%>%
+
+```
+
+#Graph2 describes the relationship between Life Expectancy and Regions.
+##This bar graph analyses the four different regions in the United States of America, and tracks life expectancy across these regions. This graph serves as a conduit between the first graph and the next, and these trends can help policy be more effective, as well as shed light on certain patterns in the USA. 
+
+```{r}
+#Graph 2
+urban %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_col(mapping = aes(x= region, y = life_expectacy),
+           fill ="lightblue", width = 0.6)+
+  labs(title="Life Expectancy",
+       subtitle="by Regions in the USA",
+       caption="Data from Urban Institute, 2018",
+  x= "Region",
+  y= "Life Expectancy") +
+  theme_minimal()
+```
+
+
+
+
+
+  
+ mutate(total_unemployment_percent=factor(total_unemployment_percent)) %>%
+  mutate(unemployment_rate_hispanic_or_latino_origin_of_any_race=factor(unemployment_rate_hispanic_or_latino_origin_of_any_race)) %>%
+  mutate(unemployment_rate_asian_alone=factor(unemployment_rate_asian_alone)) %>%
+  mutate(unemployment_rate_white_alone=factor(unemployment_rate_white_alone)) %>%
+  mutate(unemployment_rate_black_or_african_american_alone=factor(unemployment_rate_black_or_african_american_alone)) %>%
+scale_color_manual(name = "Race and Ethnicities", values = c("Total Unemployment Percent" = "#CC6666", "Hispanic or Latino Origin of Any Race" = "#9999CC", "Asian" = "#800080", "White" = "#FFDB58", "Black or African American" = "#00FF00"))
+```
+
+#Graph 2 
+
+# Graph 2 captures the relationship between overdose deaths due to opioid usage, and unamployment. 
+## The relationship between these two variables is positive and upward sloping. This is of high policy relevance, and this information can be used to create policy that generates employment in order to reduce drug usage. However, there is the possibility of reverse causation, that is, opioid usage leading to unemployment, an important caveat to remember. 
+```{r}
+#Graph 3
+urban %>%
+ ggplot(mapping = aes(y = total_unemployment_percent, x = opioid_overdose_deaths)) +
+  geom_point(
+    color = "orange", position = "jitter", size = 1.75, alpha = 0.9) +
+  geom_smooth(
+    color = "firebrick") +
+    scale_x_log10() +
+  labs(title = "Unemployment vs. Opioid Deaths",
+       x = "Number of opioid overdose deaths per 100,000 people (2017)",
+       y = "Total unemployment (Percent)",
+       caption = "Data from Urban Institute, 2018") +
+  theme(
+    plot.title = element_text(hjust = 0.5))
+```
+
+# Graph4: This stacked bar graph divides City Types by the Population Trends.
+## The growing population across all city types indicates that there is need to monitor growth and unemployment. The upward trend of unemployment coupled with growing populations in cities could be cause for concern. This stacked graph further shows us that portions of the population in Small Rural and County City Types are declining and growing, respectively, indicating a move to the City Center and Urban Cities. Growth without employment poses severe risk. 
+
+```{r}
+  #Graph 4
+  urban %>%
+  filter(!is.na(city_type) & !is.na(population_trend)) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = city_type, fill = population_trend)) +
+  labs(y = "Count", x = "City Type",
+       title = "Population Trend by City Type",
+       caption = "Data from Urban Institute, 2018") +
+   theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text = element_text(size = 7)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5))
+```
+
+``` {r}
+
+```
+
