@@ -1,37 +1,135 @@
-## Welcome to GitHub Pages
+---
+title: "Assignment 4: Data Visualization, Markdown, and Git"
+author: "Shelby Lauter & Maitreyi Natarajan"
+date: "2/22/2022"
+output: html_document
+---
 
-You can use the [editor on GitHub](https://github.com/maitreyinatarajan/ProblemSet4Final/edit/graphfour/docs/index.md) to maintain and preview the content for your website in Markdown files.
+# Built Environment Health Equity Data
+[Data Source](https://datacatalog.urban.org/dataset/72-small-and-medium-size-cities-built-environment-and-health-equity-dataset)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### SSH Authentication Screenshot
+![](Git.remote.screenshot.png)
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
-```markdown
-Syntax highlighted code block
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(dplyr)
 
-# Header 1
-## Header 2
-### Header 3
+urban <- read_csv("health.equity.data.2.csv") %>%
+    janitor::clean_names()
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/maitreyinatarajan/ProblemSet4Final/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Graph 1: Unemployment by Race and Ethnicity
 
-### Support or Contact
+Graph 1 demonstrates the relationship between race, ethnicity and unemployment in regions across the United States of America.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+This line graph shows us the trends for different races and ethnicities. It is evident that certain races suffer from greater unemployment trends than others. This is of policy relevance, as it helps policy makers identify these patterns, and work towards creating policy that targets the root of the issue.
+
+```{r graph1, warning = FALSE}
+
+urbanlong <- urban %>%
+pivot_longer(cols=c("unemployment_rate_hispanic_or_latino_origin_of_any_race", "unemployment_rate_asian_alone", "unemployment_rate_white_alone", "unemployment_rate_black_or_african_american_alone", "total_unemployment_percent"),
+               names_to = "race",
+               values_to = "unemployment_rates")
+urbanlong %>%
+  ggplot()+
+geom_line (mapping = aes(y = unemployment_rates, x = city_population, color=race), 
+           size=0.5, width = 10) +
+  labs(title="Unemployment Trends",
+       subtitle="by Race and Ethnicity",
+       caption="Data from Urban Institute, 2018",
+  y= "Unemployment Rates",
+  colour= "Race and Ethnicity") +
+  theme_minimal() +
+  theme(legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=7)) +
+  scale_x_continuous(name = "City Population")
+
+
+
+
+```
+
+
+
+
+### Graph 2: Unemployment vs. Opioid Deaths
+
+Graph 2 captures the relationship between overdose deaths due to opioid usage, and unamployment.
+
+The relationship between these two variables is positive and upward sloping. This is of high policy relevance, and this information can be used to create policy that generates employment in order to reduce drug usage. However, there is the possibility of reverse causation, that is, opioid usage leading to unemployment, an important caveat to remember.
+
+```{r graph2, warning = FALSE}
+urban %>%
+  ggplot(mapping = aes(y = total_unemployment_percent, x = opioid_overdose_deaths)) +
+  geom_point(
+    color = "orange", position = "jitter", size = 1.75, alpha = 0.9) +
+  geom_smooth(
+    color = "firebrick") + 
+    scale_x_log10() +
+  labs(title = "Unemployment vs. Opioid Deaths",
+       x = "Number of opioid overdose deaths per 100,000 people (2017)",
+       y = "Total unemployment (Percent)", 
+       caption = "Data from Urban Institute, 2018") +
+  theme(
+    plot.title = element_text(hjust = 0.5)) 
+
+```
+
+
+### Graph 3
+Graph3: This stacked bar graph divides City Types by the Population Trends.
+
+The growing population across all city types indicates that there is need to monitor growth and unemployment. The upward trend of unemployment coupled with growing populations in cities could be cause for concern. This stacked graph further shows us that portions of the population in Small Rural and County City Types are declining and growing, respectively, indicating a move to the City Center and Urban Cities. Growth without employment poses severe risk.
+
+```{r graph3, warning = FALSE}
+
+urban %>%
+  filter(!is.na(city_type) & !is.na(population_trend)) %>%
+  ggplot() + 
+  geom_bar(mapping = aes(x = city_type, fill = population_trend,
+                         legend = c("Population Trend")), alpha = 0.85) +
+  labs(y = "Count", x = "City Type",
+       title = "Population Trend by City Type",
+       caption = "Data from Urban Institute, 2018") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5))
+
+
+```
+
+### Graph 4:
+
+Graph4 describes the relationship between Life Expectancy and Regions.
+
+This bar graph analyses the four different regions in the United States of America, and tracks life expectancy across these regions. This graph serves as a conduit between the first graph and the next, and these trends can help policy be more effective, as well as shed light on certain patterns in the USA.
+
+```{r graph4, warning = FALSE}
+
+urban %>%
+  filter(!is.na(region)) %>%
+  ggplot() +
+  geom_col(mapping = aes(x= region, y = life_expectacy), 
+           fill ="lightblue", width = 0.6) +
+  labs(title="Life Expectancy",
+       subtitle="by Regions in the USA",
+       caption="Data from Urban Institute, 2018",
+       x= "Region",
+       y= "Life Expectancy") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  ylim(0, 100)
+  
+```
