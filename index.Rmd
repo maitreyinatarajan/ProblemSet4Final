@@ -44,6 +44,25 @@ geom_line (mapping = aes(x = city_population, y = total_unemployment_percent), c
 ```
 
 
+##Graph 2: Unemployment vs. Opioid Deaths
+```{r}
+urban %>%
+  ggplot(mapping = aes(y = total_unemployment_percent, x = opioid_overdose_deaths)) +
+  geom_point(
+    color = "orange") +
+  geom_smooth(
+    color = "firebrick"
+  )+ 
+  labs(title = "Unemployment vs. Opioid Deaths",
+       x = "Number of opioid overdose deaths per 100,000 people (2017)",
+       y = "Total unemployment (Percent)", 
+       caption = "Source: Urban Institute") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    plot.caption = element_text(hjust = 0.9)) 
+
+```
 
 
 
